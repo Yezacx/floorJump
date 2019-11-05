@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        html,body {
+            height: 100%;
+        }
+        ul {
+            list-style: none;
+            height: 100%;
+        }
+        ul li{
+            width: 100%;
+            height: 100%;
+        }
+        ol  {
+            list-style: none;
+            position: fixed;
+            top: 180px;
+            left: 10px;
+        }
+        ol li {
+            width: 80px;
+            height: 40px;
+            border: 1px solid #ccc;
+            margin-top: -1px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer ;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li>鞋子区域</li>
+        <li>帽子区域</li>
+        <li>裤子区域</li>
+        <li>裙子区域</li>
+        <li>袜子区域</li>
+    </ul>
+    <ol>
+        <li>鞋子</li>
+        <li>帽子</li>
+        <li>裤子</li>
+        <li>裙子</li>
+        <li>袜子</li>
+    </ol>
+<script>
+    //需求1：添加背景颜色，使得ol中的li的背景颜色与对应的ul中的li的背景颜色相同
+    //需求2：点击ol中的li,缓慢滑动到相应的ul中的li的范围
+    var arr = ["red","yellow","blue","green","pink"];
+    var ul = document.getElementsByTagName("ul")[0];
+    var ulLiArr = ul.children;
+    var ol = document.getElementsByTagName("ol")[0];
+    var olLiArr = ol.children;
+    var timer = null;/*设置定时器*/
+    var target = 0;/*目标位置*/
+    var leader = 0;/*显示区域距离屏幕顶部的距离*/
+    window.onscroll = function () {
+        leader = scroll().top;
+    }
+    for(var i = 0;i<olLiArr.length;i++){
+        olLiArr[i].index = i;
+        olLiArr[i].style.backgroundColor = arr[i];
+        ulLiArr[i].style.backgroundColor = arr[i];
+        olLiArr[i].onclick = function () {
+            clearInterval(timer);
+            target = ulLiArr[this.index].offsetTop;
+            timer = setInterval(function () {
+                var speed = (target-leader)/10;
+                speed = speed>0?Math.ceil(speed):Math.floor(speed);
+                leader = leader + speed;
+                window.scrollTo(0,leader);
+                if(Math.abs(target-leader)<=Math.abs(speed)){
+                    window.scrollTo(0,target);
+                    clearInterval(timer);
+                }
+            },30)
+        }
+    }
+    function scroll(){
+        return {
+            "top":window.pageYOffset||document.documentElement.scrollTop
+            ||document.body.scrollTop,
+            "left":window.pageXOffset||document.documentElement.scrollLeft
+            ||document.body.scrollLeft
+        }
+    }
+</script>
+</body>
+</html>
